@@ -11,9 +11,9 @@ public class ButtonListener implements ActionListener {
     TextEditor wnd;
     public String operation;
 
-    public ButtonListener(TextEditor wnd, String operation) {
-        this.wnd = wnd;
-        this.operation = operation;
+    public ButtonListener(TextEditor textEditor, String newAction) {
+        wnd = textEditor;
+        operation = newAction;
     }
 
     @Override
