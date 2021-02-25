@@ -5,10 +5,11 @@ import java.util.Vector;
 
 public class Paint extends JFrame {
 
-    private static String LINE = "line";
-    private static String RECTANGLE = "rectangle";
-    private static String CIRCLE = "circle";
+    public static final String LINE = "line";
+    public static final String RECTANGLE = "rectangle";
+    public static final String CIRCLE = "circle";
 
+    private Vector<Line> lines;
     private String mode = "line";
 
     public Paint() {
@@ -55,11 +56,17 @@ public class Paint extends JFrame {
     public static void main(String[] args) {
         Paint wnd = new Paint();
         wnd.setVisible(true);
+
+        wnd.lines = new Vector<>();
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
+
+        for (Line line : lines) {
+            line.drawLine(g);
+        }
     }
 
     public String getMode() {
@@ -68,5 +75,9 @@ public class Paint extends JFrame {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public void addLine(Line line) {
+        lines.add(line);
     }
 }
