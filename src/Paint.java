@@ -48,6 +48,7 @@ public class Paint extends JFrame {
         jMenuBar.add(jMenu);
 
         JPanel jPanel = new JPanel();
+        jPanel.setDoubleBuffered(true);
         add(jPanel, gbc);
         this.setJMenuBar(jMenuBar);
 
