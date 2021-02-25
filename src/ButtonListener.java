@@ -6,6 +6,9 @@ public class ButtonListener implements ActionListener {
     public static final String LINE = "line";
     public static final String RECTANGLE = "rectangle";
     public static final String CIRCLE = "circle";
+    public static final String STEP_BACK = "step_back";
+    public static final String STEP_FORWARD = "step_forward";
+    public static final String CLEAN = "clean";
 
     private Paint wnd;
     private String action;
@@ -25,6 +28,16 @@ public class ButtonListener implements ActionListener {
         }
         if (action.equals(ButtonListener.CIRCLE)) {
             wnd.setMode(ButtonListener.CIRCLE);
+        }
+        if (action.equals(ButtonListener.STEP_BACK)) {
+            wnd.stepBack();
+        }
+        if (action.equals(ButtonListener.STEP_FORWARD)) {
+            wnd.stepForward();
+        }
+        if (action.equals(ButtonListener.CLEAN)) {
+            wnd.clean();
+            wnd.addToMnemonika();
         }
     }
 }

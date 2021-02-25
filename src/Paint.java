@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Stack;
 import java.util.Vector;
 
 
@@ -12,6 +13,14 @@ public class Paint extends JFrame {
     private Vector<Line> lines;
     private Vector<Rectangle> rectangles;
     private Vector<Circle> circles;
+
+    private Stack<Vector<Line>> mnemonikaLinesLast;
+    private Stack<Vector<Rectangle>> mnemonikaRectangleLast;
+    private Stack<Vector<Circle>> mnemonikaCircleLast;
+
+    private Stack<Vector<Line>> mnemonikaLinesNext;
+    private Stack<Vector<Rectangle>> mnemonikaRectangleNext;
+    private Stack<Vector<Circle>> mnemonikaCircleNext;
 
     private String mode = "line";
 
@@ -31,21 +40,37 @@ public class Paint extends JFrame {
         );
 
         JMenuBar jMenuBar = new JMenuBar();
-        JMenu jMenu = new JMenu("Drawing");
+        JMenu drawing = new JMenu("Drawing");
 
         JMenuItem newLine = new JMenuItem("Line");
         newLine.addActionListener(new ButtonListener(this, ButtonListener.LINE));
-        jMenu.add(newLine);
+        drawing.add(newLine);
 
         JMenuItem newRectangle = new JMenuItem("Rectangle");
         newRectangle.addActionListener(new ButtonListener(this, ButtonListener.RECTANGLE));
-        jMenu.add(newRectangle);
+        drawing.add(newRectangle);
 
         JMenuItem newCircle = new JMenuItem("Circle");
         newCircle.addActionListener(new ButtonListener(this, ButtonListener.CIRCLE));
-        jMenu.add(newCircle);
+        drawing.add(newCircle);
 
-        jMenuBar.add(jMenu);
+        jMenuBar.add(drawing);
+
+        JMenu actions = new JMenu("Actions");
+
+        JMenuItem stepBack = new JMenuItem("Step back");
+        stepBack.addActionListener(new ButtonListener(this, ButtonListener.STEP_BACK));
+        actions.add(stepBack);
+
+        JMenuItem stepForward = new JMenuItem("Step forward");
+        stepForward.addActionListener(new ButtonListener(this, ButtonListener.STEP_FORWARD));
+        actions.add(stepForward);
+
+        JMenuItem clean = new JMenuItem("Clean");
+        clean.addActionListener(new ButtonListener(this, ButtonListener.CLEAN));
+        actions.add(clean);
+
+        jMenuBar.add(actions);
 
         JPanel jPanel = new JPanel();
         jPanel.setDoubleBuffered(true);
@@ -64,6 +89,12 @@ public class Paint extends JFrame {
         wnd.lines = new Vector<>();
         wnd.rectangles = new Vector<>();
         wnd.circles = new Vector<>();
+        wnd.mnemonikaCircleLast = new Stack<>();
+        wnd.mnemonikaLinesLast = new Stack<>();
+        wnd.mnemonikaRectangleLast = new Stack<>();
+        wnd.mnemonikaCircleNext = new Stack<>();
+        wnd.mnemonikaLinesNext = new Stack<>();
+        wnd.mnemonikaRectangleNext = new Stack<>();
     }
 
     @Override
@@ -98,5 +129,80 @@ public class Paint extends JFrame {
 
     public void addCircle(Circle circle) {
         circles.add(circle);
+    }
+
+    public void clean() {
+        lines.clear();
+        rectangles.clear();
+        circles.clear();
+        this.repaint();
+    }
+
+    public void stepForward() {
+        if (mnemonikaLinesNext.size() > 0) {
+            lines = mnemonikaLinesNext.get(0);
+            rectangles = mnemonikaRectangleNext.get(0);
+            circles = mnemonikaCircleNext.get(0);
+            mnemonikaLinesNext.pop();
+            mnemonikaRectangleNext.pop();
+            mnemonikaCircleNext.pop();
+        }
+        this.repaint();
+    }
+
+    public void stepBack() {
+        if (mnemonikaLinesLast.size() > 0) {
+            this.addToForward();
+            lines = mnemonikaLinesLast.lastElement();
+            rectangles = mnemonikaRectangleLast.lastElement();
+            circles = mnemonikaCircleLast.lastElement();
+            mnemonikaLinesLast.remove(mnemonikaLinesLast.size() - 1);
+            mnemonikaRectangleLast.remove(mnemonikaRectangleLast.size() - 1);
+            mnemonikaCircleLast.remove(mnemonikaCircleLast.size() - 1);
+        } else {
+            this.clean();
+        }
+        this.repaint();
+    }
+
+    public void addToMnemonika() {
+        Vector<Line> linesCopy = new Vector<>();
+        for (Line line : lines) {
+            linesCopy.add(line.copy());
+        }
+        Vector<Rectangle> rectanglesCopy = new Vector<>();
+        for (Rectangle rectangle : rectangles) {
+            rectanglesCopy.add(rectangle.copy());
+        }
+        Vector<Circle> circlesCopy = new Vector<>();
+        for (Circle circle : circles) {
+            circlesCopy.add(circle.copy());
+        }
+        mnemonikaLinesLast.add(linesCopy);
+        mnemonikaRectangleLast.add(rectanglesCopy);
+        mnemonikaCircleLast.add(circlesCopy);
+        while (mnemonikaLinesLast.size() > 10) {
+            mnemonikaLinesLast.pop();
+            mnemonikaRectangleLast.pop();
+            mnemonikaCircleLast.pop();
+        }
+    }
+
+    public void addToForward() {
+        Vector<Line> linesCopy = new Vector<>();
+        for (Line line : lines) {
+            linesCopy.add(line.copy());
+        }
+        Vector<Rectangle> rectanglesCopy = new Vector<>();
+        for (Rectangle rectangle : rectangles) {
+            rectanglesCopy.add(rectangle.copy());
+        }
+        Vector<Circle> circlesCopy = new Vector<>();
+        for (Circle circle : circles) {
+            circlesCopy.add(circle.copy());
+        }
+        mnemonikaLinesNext.add(linesCopy);
+        mnemonikaRectangleNext.add(rectanglesCopy);
+        mnemonikaCircleNext.add(circlesCopy);
     }
 }

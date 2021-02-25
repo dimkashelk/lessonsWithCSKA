@@ -16,6 +16,13 @@ public class Rectangle {
         this.yCenter = y1;
     }
 
+    public Rectangle(int x1, int y1, int x2, int y2) {
+        this.x1 = x1;
+        this.y1 = y1;
+        this.x2 = x2;
+        this.y2 = y2;
+    }
+
     public void move(int x, int y) {
         this.x2 = x;
         this.y2 = y;
@@ -25,19 +32,7 @@ public class Rectangle {
         g.drawRect(x1, y1, x2 - x1, y2 - y1);
     }
 
+    public Rectangle copy() {
+        return new Rectangle(x1, y1, x2, y2);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

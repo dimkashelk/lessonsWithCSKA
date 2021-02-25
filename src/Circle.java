@@ -11,11 +11,21 @@ public class Circle {
         this.y = y;
     }
 
+    public Circle(int x, int y, int radius) {
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+    }
+
     public void move(int x, int y) {
         radius = (int) Math.sqrt((double) ((this.x - x) * (this.x - x) + (this.y - y) * (this.y - y)));
     }
 
     public void drawCircle(Graphics g) {
-        g.drawOval(x - radius / 2, y - radius / 2, radius + radius / 2 , radius+ radius / 2);
+        g.drawOval(x - radius / 2, y - radius / 2, radius + radius / 2, radius + radius / 2);
+    }
+
+    public Circle copy() {
+        return new Circle(x, y, radius);
     }
 }
