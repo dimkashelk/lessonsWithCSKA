@@ -8,6 +8,7 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     private Line currentLine;
     private Rectangle currentRectangle;
+    private Circle currentCircle;
 
     public MouseActionListener(Paint wnd) {
         this.wnd = wnd;
@@ -15,7 +16,7 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        System.out.println("Clicked");
+
     }
 
     @Override
@@ -29,22 +30,26 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
                 currentRectangle = new Rectangle(e.getX(), e.getY());
                 wnd.addRectangle(currentRectangle);
             }
+            if (wnd.getMode().equals(Paint.CIRCLE)) {
+                currentCircle = new Circle(e.getX(), e.getY());
+                wnd.addCircle(currentCircle);
+            }
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        System.out.println("Released");
+
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        System.out.println("Entered");
+
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        System.out.println("Exited");
+
     }
 
     @Override
@@ -57,15 +62,14 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
             currentRectangle.move(e.getX(), e.getY());
             wnd.repaint();
         }
+        if (wnd.getMode().equals(Paint.CIRCLE)) {
+            currentCircle.move(e.getX(), e.getY());
+            wnd.repaint();
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        // if (e.getButton() == MouseEvent.BUTTON1) {
-        //     if (wnd.getMode().equals(Paint.LINE)) {
-        //         currentLine.move(e.getX(), e.getY());
-        //         wnd.repaint();
-        //     }
-        // }
+
     }
 }
