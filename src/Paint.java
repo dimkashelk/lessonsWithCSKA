@@ -11,6 +11,7 @@ public class Paint extends JFrame {
 
     private Vector<Line> lines;
     private Vector<Rectangle> rectangles;
+    private Vector<Circle> circles;
 
     private String mode = "line";
 
@@ -61,6 +62,7 @@ public class Paint extends JFrame {
 
         wnd.lines = new Vector<>();
         wnd.rectangles = new Vector<>();
+        wnd.circles = new Vector<>();
     }
 
     @Override
@@ -71,6 +73,9 @@ public class Paint extends JFrame {
         }
         for (Rectangle rectangle : rectangles) {
             rectangle.drawRectangle(g);
+        }
+        for (Circle circle : circles) {
+            circle.drawCircle(g);
         }
     }
 
@@ -88,5 +93,9 @@ public class Paint extends JFrame {
 
     public void addRectangle(Rectangle rectangle) {
         rectangles.add(rectangle);
+    }
+
+    public void addCircle(Circle circle) {
+        circles.add(circle);
     }
 }
