@@ -6,6 +6,8 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     private Paint wnd;
 
+    private Line currentLine;
+
     public MouseActionListener(Paint wnd) {
         this.wnd = wnd;
     }
@@ -17,7 +19,12 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("Pressed");
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (wnd.getMode().equals(wnd.LINE)) {
+                currentLine = new Line(e.getX(), e.getY());
+                wnd.addLine(currentLine);
+            }
+        }
     }
 
     @Override
@@ -37,11 +44,19 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        System.out.println("Dragged");
+        if (wnd.getMode().equals(wnd.LINE)) {
+            currentLine.move(e.getX(), e.getY());
+            wnd.repaint();
+        }
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        System.out.println("Moved");
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            if (wnd.getMode().equals(wnd.LINE)) {
+                currentLine.move(e.getX(), e.getY());
+                wnd.repaint();
+            }
+        }
     }
 }
