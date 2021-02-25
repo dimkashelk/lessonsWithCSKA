@@ -17,14 +17,14 @@ public class ButtonListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.equals(ButtonListener.LINE)) {
+        if (action.equals(ButtonListener.RECTANGLE)) {
+            wnd.setMode(ButtonListener.RECTANGLE);
+        }
+        if (action.equals(ButtonListener.LINE)) {
             wnd.setMode(ButtonListener.LINE);
         }
-        if (e.equals(ButtonListener.CIRCLE)) {
+        if (action.equals(ButtonListener.CIRCLE)) {
             wnd.setMode(ButtonListener.CIRCLE);
-        }
-        if (e.equals(ButtonListener.RECTANGLE)) {
-            wnd.setMode(ButtonListener.RECTANGLE);
         }
     }
 }

@@ -10,6 +10,8 @@ public class Paint extends JFrame {
     public static final String CIRCLE = "circle";
 
     private Vector<Line> lines;
+    private Vector<Rectangle> rectangles;
+
     private String mode = "line";
 
     public Paint() {
@@ -58,14 +60,17 @@ public class Paint extends JFrame {
         wnd.setVisible(true);
 
         wnd.lines = new Vector<>();
+        wnd.rectangles = new Vector<>();
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-
         for (Line line : lines) {
             line.drawLine(g);
+        }
+        for (Rectangle rectangle : rectangles) {
+            rectangle.drawRectangle(g);
         }
     }
 
@@ -79,5 +84,9 @@ public class Paint extends JFrame {
 
     public void addLine(Line line) {
         lines.add(line);
+    }
+
+    public void addRectangle(Rectangle rectangle) {
+        rectangles.add(rectangle);
     }
 }
