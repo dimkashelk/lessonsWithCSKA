@@ -25,14 +25,17 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
             if (wnd.getMode().equals(Paint.LINE)) {
                 currentLine = new Line(e.getX(), e.getY());
                 wnd.addLine(currentLine);
+                wnd.addToMnemonika();
             }
             if (wnd.getMode().equals(Paint.RECTANGLE)) {
                 currentRectangle = new Rectangle(e.getX(), e.getY());
                 wnd.addRectangle(currentRectangle);
+                wnd.addToMnemonika();
             }
             if (wnd.getMode().equals(Paint.CIRCLE)) {
                 currentCircle = new Circle(e.getX(), e.getY());
                 wnd.addCircle(currentCircle);
+                wnd.addToMnemonika();
             }
         }
     }
