@@ -12,14 +12,6 @@ public class Line {
         y1 = y2 = y;
     }
 
-    public void setX2(int x2) {
-        this.x2 = x2;
-    }
-
-    public void setY2(int y2) {
-        this.y2 = y2;
-    }
-
     public void move(int x, int y) {
         this.x2 = x;
         this.y2 = y;
