@@ -9,18 +9,22 @@ public class Paint extends JFrame {
     public static final String LINE = "line";
     public static final String RECTANGLE = "rectangle";
     public static final String CIRCLE = "circle";
+    public static final String PENCIL = "pencil";
 
     private Vector<Line> lines;
     private Vector<Rectangle> rectangles;
     private Vector<Circle> circles;
+    private Vector<Pencil> pencils;
 
     private Stack<Vector<Line>> mnemonikaLinesLast;
     private Stack<Vector<Rectangle>> mnemonikaRectangleLast;
     private Stack<Vector<Circle>> mnemonikaCircleLast;
+    private Stack<Vector<Pencil>> mnemonikaPencilsLast;
 
     private Stack<Vector<Line>> mnemonikaLinesNext;
     private Stack<Vector<Rectangle>> mnemonikaRectangleNext;
     private Stack<Vector<Circle>> mnemonikaCircleNext;
+    private Stack<Vector<Pencil>> mnemonikaPencilsNext;
 
     private String mode = "line";
 
@@ -53,6 +57,10 @@ public class Paint extends JFrame {
         JMenuItem newCircle = new JMenuItem("Circle");
         newCircle.addActionListener(new ButtonListener(this, ButtonListener.CIRCLE));
         drawing.add(newCircle);
+
+        JMenuItem newPencil = new JMenuItem("Pencil");
+        newPencil.addActionListener(new ButtonListener(this, ButtonListener.PENCIL));
+        drawing.add(newPencil);
 
         jMenuBar.add(drawing);
 
@@ -89,12 +97,15 @@ public class Paint extends JFrame {
         wnd.lines = new Vector<>();
         wnd.rectangles = new Vector<>();
         wnd.circles = new Vector<>();
+        wnd.pencils = new Vector<>();
         wnd.mnemonikaCircleLast = new Stack<>();
         wnd.mnemonikaLinesLast = new Stack<>();
         wnd.mnemonikaRectangleLast = new Stack<>();
+        wnd.mnemonikaPencilsLast = new Stack<>();
         wnd.mnemonikaCircleNext = new Stack<>();
         wnd.mnemonikaLinesNext = new Stack<>();
         wnd.mnemonikaRectangleNext = new Stack<>();
+        wnd.mnemonikaPencilsNext = new Stack<>();
     }
 
     @Override
@@ -108,6 +119,9 @@ public class Paint extends JFrame {
         }
         for (Circle circle : circles) {
             circle.drawCircle(g);
+        }
+        for (Pencil pencil: pencils) {
+            pencil.drawPolyline(g);
         }
     }
 
@@ -131,11 +145,16 @@ public class Paint extends JFrame {
         circles.add(circle);
     }
 
+    public void addPencil(Pencil pencil) {
+        pencils.add(pencil);
+    }
+
     public void clean() {
         this.addToMnemonika();
         lines.clear();
         rectangles.clear();
         circles.clear();
+        pencils.clear();
         this.repaint();
     }
 
@@ -145,9 +164,11 @@ public class Paint extends JFrame {
             lines = mnemonikaLinesNext.get(0);
             rectangles = mnemonikaRectangleNext.get(0);
             circles = mnemonikaCircleNext.get(0);
+            pencils = mnemonikaPencilsNext.get(0);
             mnemonikaLinesNext.remove(0);
             mnemonikaRectangleNext.remove(0);
             mnemonikaCircleNext.remove(0);
+            mnemonikaPencilsNext.remove(0);
         }
         this.repaint();
     }
@@ -158,9 +179,11 @@ public class Paint extends JFrame {
             lines = mnemonikaLinesLast.lastElement();
             rectangles = mnemonikaRectangleLast.lastElement();
             circles = mnemonikaCircleLast.lastElement();
+            pencils = mnemonikaPencilsLast.lastElement();
             mnemonikaLinesLast.remove(mnemonikaLinesLast.size() - 1);
             mnemonikaRectangleLast.remove(mnemonikaRectangleLast.size() - 1);
             mnemonikaCircleLast.remove(mnemonikaCircleLast.size() - 1);
+            mnemonikaPencilsLast.remove(mnemonikaPencilsLast.size() - 1);
         }
         this.repaint();
     }
@@ -178,12 +201,18 @@ public class Paint extends JFrame {
         for (Circle circle : circles) {
             circlesCopy.add(circle.copy());
         }
+        Vector<Pencil> pencilsCopy = new Vector<>();
+        for (Pencil pencil: pencils) {
+            pencilsCopy.add(pencil.copy());
+        }
         mnemonikaLinesLast.add(linesCopy);
         mnemonikaRectangleLast.add(rectanglesCopy);
         mnemonikaCircleLast.add(circlesCopy);
+        mnemonikaPencilsLast.add(pencilsCopy);
         while (mnemonikaLinesLast.size() > 10) {
             mnemonikaLinesLast.pop();
             mnemonikaRectangleLast.pop();
+            mnemonikaCircleLast.pop();
             mnemonikaCircleLast.pop();
         }
     }
@@ -201,8 +230,13 @@ public class Paint extends JFrame {
         for (Circle circle : circles) {
             circlesCopy.add(circle.copy());
         }
+        Vector<Pencil> pencilsCopy = new Vector<>();
+        for (Pencil pencil: pencils) {
+            pencilsCopy.add(pencil.copy());
+        }
         mnemonikaLinesNext.add(0, linesCopy);
         mnemonikaRectangleNext.add(0, rectanglesCopy);
         mnemonikaCircleNext.add(0, circlesCopy);
+        mnemonikaPencilsNext.add(0, pencilsCopy);
     }
 }

@@ -6,6 +6,7 @@ public class ButtonListener implements ActionListener {
     public static final String LINE = "line";
     public static final String RECTANGLE = "rectangle";
     public static final String CIRCLE = "circle";
+    public static final String PENCIL = "pencil";
     public static final String STEP_BACK = "step_back";
     public static final String STEP_FORWARD = "step_forward";
     public static final String CLEAN = "clean";
@@ -28,6 +29,9 @@ public class ButtonListener implements ActionListener {
         }
         if (action.equals(ButtonListener.CIRCLE)) {
             wnd.setMode(ButtonListener.CIRCLE);
+        }
+        if (action.equals(ButtonListener.PENCIL)) {
+            wnd.setMode(ButtonListener.PENCIL);
         }
         if (action.equals(ButtonListener.STEP_BACK)) {
             wnd.stepBack();

@@ -9,6 +9,7 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
     private Line currentLine;
     private Rectangle currentRectangle;
     private Circle currentCircle;
+    private Pencil currentPencil;
 
     public MouseActionListener(Paint wnd) {
         this.wnd = wnd;
@@ -16,7 +17,9 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        if (e.getButton() == MouseEvent.BUTTON1) {
+            this.mouseDragged(e);
+        }
     }
 
     @Override
@@ -35,6 +38,11 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
             if (wnd.getMode().equals(Paint.CIRCLE)) {
                 currentCircle = new Circle(e.getX(), e.getY());
                 wnd.addCircle(currentCircle);
+                wnd.addToMnemonika();
+            }
+            if (wnd.getMode().equals(Paint.PENCIL)) {
+                currentPencil = new Pencil(e.getX(), e.getY());
+                wnd.addPencil(currentPencil);
                 wnd.addToMnemonika();
             }
         }
@@ -67,6 +75,10 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
         }
         if (wnd.getMode().equals(Paint.CIRCLE)) {
             currentCircle.move(e.getX(), e.getY());
+            wnd.repaint();
+        }
+        if (wnd.getMode().equals(Paint.PENCIL)) {
+            currentPencil.add(e.getX(), e.getY());
             wnd.repaint();
         }
     }
