@@ -132,6 +132,7 @@ public class Paint extends JFrame {
     }
 
     public void clean() {
+        this.addToMnemonika();
         lines.clear();
         rectangles.clear();
         circles.clear();
@@ -140,12 +141,13 @@ public class Paint extends JFrame {
 
     public void stepForward() {
         if (mnemonikaLinesNext.size() > 0) {
+            this.addToMnemonika();
             lines = mnemonikaLinesNext.get(0);
             rectangles = mnemonikaRectangleNext.get(0);
             circles = mnemonikaCircleNext.get(0);
-            mnemonikaLinesNext.pop();
-            mnemonikaRectangleNext.pop();
-            mnemonikaCircleNext.pop();
+            mnemonikaLinesNext.remove(0);
+            mnemonikaRectangleNext.remove(0);
+            mnemonikaCircleNext.remove(0);
         }
         this.repaint();
     }
@@ -159,8 +161,6 @@ public class Paint extends JFrame {
             mnemonikaLinesLast.remove(mnemonikaLinesLast.size() - 1);
             mnemonikaRectangleLast.remove(mnemonikaRectangleLast.size() - 1);
             mnemonikaCircleLast.remove(mnemonikaCircleLast.size() - 1);
-        } else {
-            this.clean();
         }
         this.repaint();
     }
@@ -201,8 +201,8 @@ public class Paint extends JFrame {
         for (Circle circle : circles) {
             circlesCopy.add(circle.copy());
         }
-        mnemonikaLinesNext.add(linesCopy);
-        mnemonikaRectangleNext.add(rectanglesCopy);
-        mnemonikaCircleNext.add(circlesCopy);
+        mnemonikaLinesNext.add(0, linesCopy);
+        mnemonikaRectangleNext.add(0, rectanglesCopy);
+        mnemonikaCircleNext.add(0, circlesCopy);
     }
 }
