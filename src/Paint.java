@@ -120,7 +120,7 @@ public class Paint extends JFrame {
         for (Circle circle : circles) {
             circle.drawCircle(g);
         }
-        for (Pencil pencil: pencils) {
+        for (Pencil pencil : pencils) {
             pencil.drawPolyline(g);
         }
     }
@@ -135,18 +135,22 @@ public class Paint extends JFrame {
 
     public void addLine(Line line) {
         lines.add(line);
+        this.cleanForward();
     }
 
     public void addRectangle(Rectangle rectangle) {
         rectangles.add(rectangle);
+        this.cleanForward();
     }
 
     public void addCircle(Circle circle) {
         circles.add(circle);
+        this.cleanForward();
     }
 
     public void addPencil(Pencil pencil) {
         pencils.add(pencil);
+        this.cleanForward();
     }
 
     public void clean() {
@@ -202,7 +206,7 @@ public class Paint extends JFrame {
             circlesCopy.add(circle.copy());
         }
         Vector<Pencil> pencilsCopy = new Vector<>();
-        for (Pencil pencil: pencils) {
+        for (Pencil pencil : pencils) {
             pencilsCopy.add(pencil.copy());
         }
         mnemonikaLinesLast.add(linesCopy);
@@ -231,12 +235,19 @@ public class Paint extends JFrame {
             circlesCopy.add(circle.copy());
         }
         Vector<Pencil> pencilsCopy = new Vector<>();
-        for (Pencil pencil: pencils) {
+        for (Pencil pencil : pencils) {
             pencilsCopy.add(pencil.copy());
         }
         mnemonikaLinesNext.add(0, linesCopy);
         mnemonikaRectangleNext.add(0, rectanglesCopy);
         mnemonikaCircleNext.add(0, circlesCopy);
         mnemonikaPencilsNext.add(0, pencilsCopy);
+    }
+
+    public void cleanForward() {
+        mnemonikaPencilsNext.clear();
+        mnemonikaRectangleNext.clear();
+        mnemonikaLinesNext.clear();
+        mnemonikaCircleNext.clear();
     }
 }
