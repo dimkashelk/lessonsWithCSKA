@@ -108,6 +108,10 @@ public class Paint extends JFrame {
         yellow.addActionListener(new ButtonListener(this, ButtonListener.YELLOW));
         color.add(yellow);
 
+        JMenuItem colorChooser = new JMenuItem("Own color");
+        colorChooser.addActionListener(new ButtonListener(this, ButtonListener.COLOR_CHOOSER));
+        color.add(colorChooser);
+
 
         jMenuBar.add(color);
 

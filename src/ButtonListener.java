@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,7 @@ public class ButtonListener implements ActionListener {
     public static final String BLUE = "blue";
     public static final String GREEN = "green";
     public static final String YELLOW = "yellow";
+    public static final String COLOR_CHOOSER = "color_chooser";
 
     private Paint wnd;
     private String action;
@@ -67,6 +69,9 @@ public class ButtonListener implements ActionListener {
         }
         if (action.equals(ButtonListener.YELLOW)){
             wnd.color = Color.YELLOW;
+        }
+        if (action.equals(ButtonListener.COLOR_CHOOSER)){
+            wnd.color = JColorChooser.showDialog(wnd, "Choose own color", Color.WHITE);
         }
     }
 }
