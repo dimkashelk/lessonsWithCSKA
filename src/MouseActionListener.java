@@ -26,22 +26,22 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
             if (wnd.getMode().equals(Paint.LINE)) {
-                currentLine = new Line(e.getX(), e.getY());
+                currentLine = new Line(e.getX(), e.getY(), wnd.color);
                 wnd.addLine(currentLine);
                 wnd.addToMnemonika();
             }
             if (wnd.getMode().equals(Paint.RECTANGLE)) {
-                currentRectangle = new Rectangle(e.getX(), e.getY());
+                currentRectangle = new Rectangle(e.getX(), e.getY(), wnd.color);
                 wnd.addRectangle(currentRectangle);
                 wnd.addToMnemonika();
             }
             if (wnd.getMode().equals(Paint.CIRCLE)) {
-                currentCircle = new Circle(e.getX(), e.getY());
+                currentCircle = new Circle(e.getX(), e.getY(), wnd.color);
                 wnd.addCircle(currentCircle);
                 wnd.addToMnemonika();
             }
             if (wnd.getMode().equals(Paint.PENCIL)) {
-                currentPencil = new Pencil(e.getX(), e.getY());
+                currentPencil = new Pencil(e.getX(), e.getY(), wnd.color);
                 wnd.addPencil(currentPencil);
                 wnd.addToMnemonika();
             }
