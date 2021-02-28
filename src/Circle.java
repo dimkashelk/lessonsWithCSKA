@@ -23,6 +23,7 @@ public class Circle {
 
     public void drawCircle(Graphics g) {
         g.drawOval(x - radius / 2, y - radius / 2, radius + radius / 2, radius + radius / 2);
+        g.fillOval(x - radius / 2, y - radius / 2, radius + radius / 2, radius + radius / 2);
     }
 
     public Circle copy() {
