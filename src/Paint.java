@@ -16,6 +16,11 @@ public class Paint extends JFrame {
     private Vector<Circle> circles;
     private Vector<Pencil> pencils;
 
+    private Vector<Color> linesColor;
+    private Vector<Color> rectanglesColor;
+    private Vector<Color> circlesColor;
+    private Vector<Color> pencilsColor;
+
     private Stack<Vector<Line>> mnemonikaLinesLast;
     private Stack<Vector<Rectangle>> mnemonikaRectangleLast;
     private Stack<Vector<Circle>> mnemonikaCircleLast;
@@ -28,6 +33,7 @@ public class Paint extends JFrame {
 
     private String mode = "line";
 
+    public Color color = Color.BLACK;
     public Paint() {
         setSize(640, 480);
         setLocation(100, 100);
@@ -80,6 +86,35 @@ public class Paint extends JFrame {
 
         jMenuBar.add(actions);
 
+        JMenu color = new JMenu("Color");
+
+        JMenuItem white = new JMenuItem("White");
+        white.addActionListener(new ButtonListener(this, ButtonListener.WHITE));
+        color.add(white);
+
+        JMenuItem black = new JMenuItem("Black");
+        black.addActionListener(new ButtonListener(this, ButtonListener.BLACK));
+        color.add(black);
+
+        JMenuItem red = new JMenuItem("Red");
+        red.addActionListener(new ButtonListener(this, ButtonListener.RED));
+        color.add(red);
+
+        JMenuItem blue = new JMenuItem("Blue");
+        red.addActionListener(new ButtonListener(this, ButtonListener.BLUE));
+        color.add(red);
+
+        JMenuItem green = new JMenuItem("Green");
+        green.addActionListener(new ButtonListener(this, ButtonListener.GREEN));
+        color.add(green);
+
+        JMenuItem yellow = new JMenuItem("Yellow");
+        yellow.addActionListener(new ButtonListener(this, ButtonListener.YELLOW));
+        color.add(yellow);
+
+
+        jMenuBar.add(color);
+
         JPanel jPanel = new JPanel();
         jPanel.setDoubleBuffered(true);
         add(jPanel, gbc);
@@ -98,6 +133,10 @@ public class Paint extends JFrame {
         wnd.rectangles = new Vector<>();
         wnd.circles = new Vector<>();
         wnd.pencils = new Vector<>();
+        wnd.linesColor = new Vector<>();
+        wnd.rectanglesColor = new Vector<>();
+        wnd.circlesColor = new Vector<>();
+        wnd.pencilsColor = new Vector<>();
         wnd.mnemonikaCircleLast = new Stack<>();
         wnd.mnemonikaLinesLast = new Stack<>();
         wnd.mnemonikaRectangleLast = new Stack<>();
@@ -111,17 +150,22 @@ public class Paint extends JFrame {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        for (Line line : lines) {
-            line.drawLine(g);
+        g.setColor(this.color);
+        for (int i = 0; i < lines.size(); ++i) {
+            g.setColor(linesColor.get(i));
+            lines.get(i).drawLine(g);
         }
-        for (Rectangle rectangle : rectangles) {
-            rectangle.drawRectangle(g);
+        for(int i = 0; i < rectangles.size(); ++i){
+            g.setColor(rectanglesColor.get(i));
+            rectangles.get(i).drawRectangle(g);
         }
-        for (Circle circle : circles) {
-            circle.drawCircle(g);
+        for (int i = 0; i < circles.size(); ++i){
+            g.setColor(circlesColor.get(i));
+            circles.get(i).drawCircle(g);
         }
-        for (Pencil pencil : pencils) {
-            pencil.drawPolyline(g);
+        for (int i = 0; i < pencils.size(); ++i){
+            g.setColor(pencilsColor.get(i));
+            pencils.get(i).drawPolyline(g);
         }
     }
 
@@ -135,21 +179,25 @@ public class Paint extends JFrame {
 
     public void addLine(Line line) {
         lines.add(line);
+        linesColor.add(this.color);
         this.cleanForward();
     }
 
     public void addRectangle(Rectangle rectangle) {
         rectangles.add(rectangle);
+        rectanglesColor.add(this.color);
         this.cleanForward();
     }
 
     public void addCircle(Circle circle) {
         circles.add(circle);
+        circlesColor.add(this.color);
         this.cleanForward();
     }
 
     public void addPencil(Pencil pencil) {
         pencils.add(pencil);
+        pencilsColor.add(this.color);
         this.cleanForward();
     }
 
@@ -159,6 +207,10 @@ public class Paint extends JFrame {
         rectangles.clear();
         circles.clear();
         pencils.clear();
+        linesColor.clear();
+        rectanglesColor.clear();
+        circlesColor.clear();
+        pencilsColor.clear();
         this.repaint();
     }
 

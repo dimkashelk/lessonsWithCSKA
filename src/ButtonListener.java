@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,6 +11,12 @@ public class ButtonListener implements ActionListener {
     public static final String STEP_BACK = "step_back";
     public static final String STEP_FORWARD = "step_forward";
     public static final String CLEAN = "clean";
+    public static final String WHITE = "white";
+    public static final String BLACK = "black";
+    public static final String RED = "red";
+    public static final String BLUE = "blue";
+    public static final String GREEN = "green";
+    public static final String YELLOW = "yellow";
 
     private Paint wnd;
     private String action;
@@ -42,6 +49,24 @@ public class ButtonListener implements ActionListener {
         if (action.equals(ButtonListener.CLEAN)) {
             wnd.clean();
             wnd.addToMnemonika();
+        }
+        if (action.equals(ButtonListener.BLACK)){
+            wnd.color = Color.BLACK;
+        }
+        if (action.equals(ButtonListener.WHITE)){
+            wnd.color = Color.WHITE;
+        }
+        if (action.equals(ButtonListener.RED)){
+            wnd.color = Color.RED;
+        }
+        if (action.equals(ButtonListener.BLUE)){
+            wnd.color = Color.BLUE;
+        }
+        if (action.equals(ButtonListener.GREEN)){
+            wnd.color = Color.GREEN;
+        }
+        if (action.equals(ButtonListener.YELLOW)){
+            wnd.color = Color.YELLOW;
         }
     }
 }
