@@ -9,9 +9,11 @@ public class ButtonListener implements ActionListener {
     public static final String RECTANGLE = "rectangle";
     public static final String CIRCLE = "circle";
     public static final String PENCIL = "pencil";
+
     public static final String STEP_BACK = "step_back";
     public static final String STEP_FORWARD = "step_forward";
     public static final String CLEAN = "clean";
+
     public static final String WHITE = "white";
     public static final String BLACK = "black";
     public static final String RED = "red";
@@ -50,27 +52,26 @@ public class ButtonListener implements ActionListener {
         }
         if (action.equals(ButtonListener.CLEAN)) {
             wnd.clean();
-            wnd.addToMnemonika();
         }
-        if (action.equals(ButtonListener.BLACK)){
+        if (action.equals(ButtonListener.BLACK)) {
             wnd.color = Color.BLACK;
         }
-        if (action.equals(ButtonListener.WHITE)){
+        if (action.equals(ButtonListener.WHITE)) {
             wnd.color = Color.WHITE;
         }
-        if (action.equals(ButtonListener.RED)){
+        if (action.equals(ButtonListener.RED)) {
             wnd.color = Color.RED;
         }
-        if (action.equals(ButtonListener.BLUE)){
+        if (action.equals(ButtonListener.BLUE)) {
             wnd.color = Color.BLUE;
         }
-        if (action.equals(ButtonListener.GREEN)){
+        if (action.equals(ButtonListener.GREEN)) {
             wnd.color = Color.GREEN;
         }
-        if (action.equals(ButtonListener.YELLOW)){
+        if (action.equals(ButtonListener.YELLOW)) {
             wnd.color = Color.YELLOW;
         }
-        if (action.equals(ButtonListener.COLOR_CHOOSER)){
+        if (action.equals(ButtonListener.COLOR_CHOOSER)) {
             wnd.color = JColorChooser.showDialog(wnd, "Choose own color", Color.WHITE);
         }
     }

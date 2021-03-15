@@ -1,7 +1,6 @@
 import java.awt.*;
-import java.util.Vector;
 
-public class Pencil {
+public class Pencil implements Figure {
 
     private int size = 1000;
     private int tSize = 0;
@@ -11,28 +10,10 @@ public class Pencil {
 
     private Color color;
 
-    public Pencil(int x, int y) {
-        this.x[0] = x;
-        this.y[0] = y;
-        this.color = Color.BLACK;
-    }
-
     public Pencil(int x, int y, Color color) {
         this.x[0] = x;
         this.y[0] = y;
         this.color = color;
-    }
-
-    public Pencil(int[] x, int[] y, int size, int tSize) {
-        this.x = new int[size];
-        this.y = new int[size];
-        for (int i = 0; i < size; i++) {
-            this.x[i] = x[i];
-            this.y[i] = y[i];
-        }
-        this.size = size;
-        this.tSize = tSize;
-        this.color = Color.BLACK;
     }
 
     public Pencil(int[] x, int[] y, int size, int tSize, Color color) {
@@ -47,9 +28,14 @@ public class Pencil {
         this.color = color;
     }
 
-    public void drawPolyline(Graphics g) {
+    public void paint(Graphics g) {
         g.setColor(this.color);
         g.drawPolyline(x, y, tSize + 1);
+    }
+
+    @Override
+    public void move(int x, int y) {
+
     }
 
     public void add(int x, int y) {
@@ -67,7 +53,7 @@ public class Pencil {
         this.y[tSize] = y;
     }
 
-    public Pencil copy() {
+    public Figure copy() {
         int[] dopX = new int[size];
         int[] dopY = new int[size];
         for (int i = 0; i < size; i++) {

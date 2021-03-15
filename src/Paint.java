@@ -1,6 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.Stack;
+import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 
@@ -11,25 +11,16 @@ public class Paint extends JFrame {
     public static final String CIRCLE = "circle";
     public static final String PENCIL = "pencil";
 
-    private Vector<Line> lines;
-    private Vector<Rectangle> rectangles;
-    private Vector<Circle> circles;
-    private Vector<Pencil> pencils;
-
-
-    private Stack<Vector<Line>> mnemonikaLinesLast;
-    private Stack<Vector<Rectangle>> mnemonikaRectangleLast;
-    private Stack<Vector<Circle>> mnemonikaCircleLast;
-    private Stack<Vector<Pencil>> mnemonikaPencilsLast;
-
-    private Stack<Vector<Line>> mnemonikaLinesNext;
-    private Stack<Vector<Rectangle>> mnemonikaRectangleNext;
-    private Stack<Vector<Circle>> mnemonikaCircleNext;
-    private Stack<Vector<Pencil>> mnemonikaPencilsNext;
+    private Vector<Figure> figures;
+    private Vector<Figure> figuresLast;
+    private int pos = 1;
 
     private String mode = "line";
 
+    private BufferedImage canvas;
+
     public Color color = Color.BLACK;
+
     public Paint() {
         setSize(640, 480);
         setLocation(100, 100);
@@ -118,7 +109,13 @@ public class Paint extends JFrame {
         JPanel jPanel = new JPanel();
         jPanel.setDoubleBuffered(true);
         add(jPanel, gbc);
-        this.setJMenuBar(jMenuBar);
+
+        canvas = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
+
+        Graphics g = canvas.getGraphics();
+        g.setColor(Color.white);
+        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        g.setColor(Color.white);
 
         MouseActionListener mouseActionListener = new MouseActionListener(this);
         addMouseListener(mouseActionListener);
@@ -129,36 +126,21 @@ public class Paint extends JFrame {
         Paint wnd = new Paint();
         wnd.setVisible(true);
 
-        wnd.lines = new Vector<>();
-        wnd.rectangles = new Vector<>();
-        wnd.circles = new Vector<>();
-        wnd.pencils = new Vector<>();
-        wnd.mnemonikaCircleLast = new Stack<>();
-        wnd.mnemonikaLinesLast = new Stack<>();
-        wnd.mnemonikaRectangleLast = new Stack<>();
-        wnd.mnemonikaPencilsLast = new Stack<>();
-        wnd.mnemonikaCircleNext = new Stack<>();
-        wnd.mnemonikaLinesNext = new Stack<>();
-        wnd.mnemonikaRectangleNext = new Stack<>();
-        wnd.mnemonikaPencilsNext = new Stack<>();
+        wnd.figures = new Vector<>();
+        wnd.figuresLast = new Vector<>();
+        wnd.pos = 0;
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.setColor(this.color);
-        for (Line line : lines) {
-            line.drawLine(g);
+        BufferedImage buffer = new BufferedImage(canvas.getWidth(), canvas.getHeight(), canvas.getType());
+        buffer.getGraphics().setColor(Color.white);
+        buffer.getGraphics().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        for (int i = 0; i < pos; i++) {
+            figures.get(i).paint(buffer.getGraphics());
         }
-        for (Rectangle rectangle : rectangles) {
-            rectangle.drawRectangle(g);
-        }
-        for (Circle circle : circles) {
-            circle.drawCircle(g);
-        }
-        for (Pencil pencil : pencils) {
-            pencil.drawPolyline(g);
-        }
+        g.drawImage(buffer, 0, 0, null);
     }
 
     public String getMode() {
@@ -169,121 +151,53 @@ public class Paint extends JFrame {
         this.mode = mode;
     }
 
-    public void addLine(Line line) {
-        lines.add(line);
+    public void add(Figure figure) {
         this.cleanForward();
-    }
-
-    public void addRectangle(Rectangle rectangle) {
-        rectangles.add(rectangle);
-        this.cleanForward();
-    }
-
-    public void addCircle(Circle circle) {
-        circles.add(circle);
-        this.cleanForward();
-    }
-
-    public void addPencil(Pencil pencil) {
-        pencils.add(pencil);
-        this.cleanForward();
+        figures.add(figure);
+        pos += 1;
+        this.repaint();
     }
 
     public void clean() {
         this.addToMnemonika();
-        lines.clear();
-        rectangles.clear();
-        circles.clear();
-        pencils.clear();
+        figures.clear();
+        pos = 0;
         this.repaint();
     }
 
     public void stepForward() {
-        if (mnemonikaLinesNext.size() > 0) {
-            this.addToMnemonika();
-            lines = mnemonikaLinesNext.get(0);
-            rectangles = mnemonikaRectangleNext.get(0);
-            circles = mnemonikaCircleNext.get(0);
-            pencils = mnemonikaPencilsNext.get(0);
-            mnemonikaLinesNext.remove(0);
-            mnemonikaRectangleNext.remove(0);
-            mnemonikaCircleNext.remove(0);
-            mnemonikaPencilsNext.remove(0);
-        }
+        pos = Math.min(figures.size(), pos + 1);
         this.repaint();
     }
 
     public void stepBack() {
-        if (mnemonikaLinesLast.size() > 0) {
-            this.addToForward();
-            lines = mnemonikaLinesLast.lastElement();
-            rectangles = mnemonikaRectangleLast.lastElement();
-            circles = mnemonikaCircleLast.lastElement();
-            pencils = mnemonikaPencilsLast.lastElement();
-            mnemonikaLinesLast.remove(mnemonikaLinesLast.size() - 1);
-            mnemonikaRectangleLast.remove(mnemonikaRectangleLast.size() - 1);
-            mnemonikaCircleLast.remove(mnemonikaCircleLast.size() - 1);
-            mnemonikaPencilsLast.remove(mnemonikaPencilsLast.size() - 1);
+        if (pos == 0) {
+            if (figuresLast.size() > 0) {
+                for (Figure figure : figuresLast) {
+                    figures.add(figure.copy());
+                }
+                figuresLast = new Vector<>();
+                pos = figures.size();
+                this.repaint();
+                return;
+            }
         }
+        pos = Math.max(0, pos - 1);
         this.repaint();
     }
 
     public void addToMnemonika() {
-        Vector<Line> linesCopy = new Vector<>();
-        for (Line line : lines) {
-            linesCopy.add(line.copy());
-        }
-        Vector<Rectangle> rectanglesCopy = new Vector<>();
-        for (Rectangle rectangle : rectangles) {
-            rectanglesCopy.add(rectangle.copy());
-        }
-        Vector<Circle> circlesCopy = new Vector<>();
-        for (Circle circle : circles) {
-            circlesCopy.add(circle.copy());
-        }
-        Vector<Pencil> pencilsCopy = new Vector<>();
-        for (Pencil pencil : pencils) {
-            pencilsCopy.add(pencil.copy());
-        }
-        mnemonikaLinesLast.add(linesCopy);
-        mnemonikaRectangleLast.add(rectanglesCopy);
-        mnemonikaCircleLast.add(circlesCopy);
-        mnemonikaPencilsLast.add(pencilsCopy);
-        while (mnemonikaLinesLast.size() > 10) {
-            mnemonikaLinesLast.pop();
-            mnemonikaRectangleLast.pop();
-            mnemonikaCircleLast.pop();
-            mnemonikaCircleLast.pop();
-        }
-    }
-
-    public void addToForward() {
-        Vector<Line> linesCopy = new Vector<>();
-        for (Line line : lines) {
-            linesCopy.add(line.copy());
-        }
-        Vector<Rectangle> rectanglesCopy = new Vector<>();
-        for (Rectangle rectangle : rectangles) {
-            rectanglesCopy.add(rectangle.copy());
-        }
-        Vector<Circle> circlesCopy = new Vector<>();
-        for (Circle circle : circles) {
-            circlesCopy.add(circle.copy());
-        }
-        Vector<Pencil> pencilsCopy = new Vector<>();
-        for (Pencil pencil : pencils) {
-            pencilsCopy.add(pencil.copy());
-        }
-        mnemonikaLinesNext.add(0, linesCopy);
-        mnemonikaRectangleNext.add(0, rectanglesCopy);
-        mnemonikaCircleNext.add(0, circlesCopy);
-        mnemonikaPencilsNext.add(0, pencilsCopy);
+        if (figures.size() > 0)
+            for (Figure figure : figures) {
+                figuresLast.add(figure.copy());
+            }
+        this.repaint();
     }
 
     public void cleanForward() {
-        mnemonikaPencilsNext.clear();
-        mnemonikaRectangleNext.clear();
-        mnemonikaLinesNext.clear();
-        mnemonikaCircleNext.clear();
+        for (int i = figures.size() - 1; i >= pos; i--) {
+            figures.remove(i);
+        }
+        this.repaint();
     }
 }
