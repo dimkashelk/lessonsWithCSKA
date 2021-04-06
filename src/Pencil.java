@@ -40,13 +40,19 @@ public class Pencil implements Figure {
 
     public void add(int x, int y) {
         tSize++;
-        if (tSize == size) {
+        if (tSize >= size - 100) {
             size += 1000;
             int[] dopX = new int[size];
             int[] dopY = new int[size];
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < tSize; i++) {
                 dopX[i] = this.x[i];
                 dopY[i] = this.y[i];
+            }
+            this.x = new int[size];
+            this.y = new int[size];
+            for (int i = 0; i < tSize; i++) {
+                this.x[i] = dopX[i];
+                this.y[i] = dopY[i];
             }
         }
         this.x[tSize] = x;

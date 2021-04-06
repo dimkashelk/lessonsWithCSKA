@@ -45,6 +45,9 @@ public class MouseActionListener implements MouseListener, MouseMotionListener {
                 wnd.add(currentPencil);
                 wnd.addToMnemonika();
             }
+            if (wnd.getMode().equals(Paint.FILL)) {
+                wnd.fillArea(e.getX(), e.getY());
+            }
         }
     }
 

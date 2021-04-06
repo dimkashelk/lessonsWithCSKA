@@ -30,6 +30,8 @@ public class Line implements Figure {
     public void paint(Graphics g) {
         g.setColor(this.color);
         g.drawLine(x1, y1, x2, y2);
+        g.drawLine(x1, y1 - 1, x2, y2 - 1);
+        g.drawLine(x1, y1 + 1, x2, y2 + 1);
     }
 
     public Figure copy() {

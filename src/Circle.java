@@ -21,7 +21,7 @@ public class Circle implements Figure {
     }
 
     public void move(int x, int y) {
-        radius = (int) Math.ceil(Math.hypot(x - 30 - this.x, y - 90 - this.y));
+        radius = (int) Math.ceil(Math.hypot(x - this.x, y - this.y));
     }
 
     public void paint(Graphics g) {

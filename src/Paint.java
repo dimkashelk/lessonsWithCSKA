@@ -4,12 +4,15 @@ import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 
-public class Paint extends JFrame {
+public class Paint extends JPanel {
+    private int WIDTH = 300;
+    private int HEIGHT = 300;
 
     public static final String LINE = "line";
     public static final String RECTANGLE = "rectangle";
     public static final String CIRCLE = "circle";
     public static final String PENCIL = "pencil";
+    public static final String FILL = "fill";
 
     private Vector<Figure> figures;
     private Vector<Figure> figuresLast;
@@ -17,129 +20,33 @@ public class Paint extends JFrame {
 
     private String mode = "line";
 
-    private BufferedImage canvas;
-
     public Color color = Color.BLACK;
 
-    public Paint() {
-        setSize(640, 480);
-        setLocation(100, 100);
-        setTitle("Paint");
-        setLayout(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints(
-                0, 0,
-                1, 1,
-                0, 0,
-                GridBagConstraints.WEST,
-                GridBagConstraints.NONE,
-                new Insets(5, 5, 5, 5),
-                0, 0
-        );
+    private Window wnd;
 
-        JMenuBar jMenuBar = new JMenuBar();
-        JMenu drawing = new JMenu("Drawing");
+    public Paint(Window wnd) {
+        super(true);
 
-        JMenuItem newLine = new JMenuItem("Line");
-        newLine.addActionListener(new ButtonListener(this, ButtonListener.LINE));
-        drawing.add(newLine);
+        this.wnd = wnd;
 
-        JMenuItem newRectangle = new JMenuItem("Rectangle");
-        newRectangle.addActionListener(new ButtonListener(this, ButtonListener.RECTANGLE));
-        drawing.add(newRectangle);
+        figures = new Vector<>();
+        figuresLast = new Vector<>();
+        pos = 0;
 
-        JMenuItem newCircle = new JMenuItem("Circle");
-        newCircle.addActionListener(new ButtonListener(this, ButtonListener.CIRCLE));
-        drawing.add(newCircle);
-
-        JMenuItem newPencil = new JMenuItem("Pencil");
-        newPencil.addActionListener(new ButtonListener(this, ButtonListener.PENCIL));
-        drawing.add(newPencil);
-
-        jMenuBar.add(drawing);
-
-        JMenu actions = new JMenu("Actions");
-
-        JMenuItem stepBack = new JMenuItem("Step back");
-        stepBack.addActionListener(new ButtonListener(this, ButtonListener.STEP_BACK));
-        actions.add(stepBack);
-
-        JMenuItem stepForward = new JMenuItem("Step forward");
-        stepForward.addActionListener(new ButtonListener(this, ButtonListener.STEP_FORWARD));
-        actions.add(stepForward);
-
-        JMenuItem clean = new JMenuItem("Clean");
-        clean.addActionListener(new ButtonListener(this, ButtonListener.CLEAN));
-        actions.add(clean);
-
-        jMenuBar.add(actions);
-
-        JMenu color = new JMenu("Color");
-
-        JMenuItem white = new JMenuItem("White");
-        white.addActionListener(new ButtonListener(this, ButtonListener.WHITE));
-        color.add(white);
-
-        JMenuItem black = new JMenuItem("Black");
-        black.addActionListener(new ButtonListener(this, ButtonListener.BLACK));
-        color.add(black);
-
-        JMenuItem red = new JMenuItem("Red");
-        red.addActionListener(new ButtonListener(this, ButtonListener.RED));
-        color.add(red);
-
-        JMenuItem blue = new JMenuItem("Blue");
-        red.addActionListener(new ButtonListener(this, ButtonListener.BLUE));
-        color.add(red);
-
-        JMenuItem green = new JMenuItem("Green");
-        green.addActionListener(new ButtonListener(this, ButtonListener.GREEN));
-        color.add(green);
-
-        JMenuItem yellow = new JMenuItem("Yellow");
-        yellow.addActionListener(new ButtonListener(this, ButtonListener.YELLOW));
-        color.add(yellow);
-
-        JMenuItem colorChooser = new JMenuItem("Own color");
-        colorChooser.addActionListener(new ButtonListener(this, ButtonListener.COLOR_CHOOSER));
-        color.add(colorChooser);
-
-
-        jMenuBar.add(color);
-
-        JPanel jPanel = new JPanel();
-        jPanel.setDoubleBuffered(true);
-        add(jPanel, gbc);
-
-        canvas = new BufferedImage(300, 300, BufferedImage.TYPE_INT_RGB);
-
-        Graphics g = canvas.getGraphics();
-        g.setColor(Color.white);
-        g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        g.setColor(Color.white);
-
-        MouseActionListener mouseActionListener = new MouseActionListener(this);
-        addMouseListener(mouseActionListener);
-        addMouseMotionListener(mouseActionListener);
-    }
-
-    public static void main(String[] args) {
-        Paint wnd = new Paint();
-        wnd.setVisible(true);
-
-        wnd.figures = new Vector<>();
-        wnd.figuresLast = new Vector<>();
-        wnd.pos = 0;
+        MouseActionListener mal = new MouseActionListener(this);
+        addMouseListener(mal);
+        addMouseMotionListener(mal);
     }
 
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        BufferedImage buffer = new BufferedImage(canvas.getWidth(), canvas.getHeight(), canvas.getType());
-        buffer.getGraphics().setColor(Color.white);
-        buffer.getGraphics().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        for (int i = 0; i < pos; i++) {
+        BufferedImage buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        buffer.getGraphics().setColor(Color.WHITE);
+        buffer.getGraphics().fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+        buffer.getGraphics().setColor(color);
+        for (int i = 0; i < pos; i++)
             figures.get(i).paint(buffer.getGraphics());
-        }
         g.drawImage(buffer, 0, 0, null);
     }
 
@@ -199,5 +106,112 @@ public class Paint extends JFrame {
             figures.remove(i);
         }
         this.repaint();
+    }
+
+    public void fillArea(int x, int y) {
+        Pencil fillingArea = new Pencil(x, y, this.color);
+        BufferedImage buffer = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+        buffer.getGraphics().setColor(Color.white);
+        buffer.getGraphics().fillRect(0, 0, buffer.getWidth(), buffer.getHeight());
+        for (int i = 0; i < pos; i++) {
+            figures.get(i).paint(buffer.getGraphics());
+        }
+        Color toChange = new Color(buffer.getRGB(x, y));
+
+        fill(x, y, toChange, buffer, fillingArea);
+        this.add(fillingArea);
+        repaint();
+    }
+
+    private void fill(int x, int y, Color color, BufferedImage bufferedImage, Pencil fillingArea) {
+        Vector<Integer> X = new Vector<>();
+        Vector<Integer> Y = new Vector<>();
+        X.add(x);
+        Y.add(y);
+        bufferedImage.setRGB(x, y, this.color.getRGB());
+        Vector<Integer> dopX = new Vector<>();
+        Vector<Integer> dopY = new Vector<>();
+        if (x - 1 >= 0 && x - 1 < bufferedImage.getHeight() && y >= 0 && y < bufferedImage.getWidth()) {
+            Color t = new Color(bufferedImage.getRGB(x - 1, y));
+            if (t.equals(color)) {
+                dopX.add(x - 1);
+                dopY.add(y);
+                fillingArea.add(x - 1, y);
+                bufferedImage.setRGB(x - 1, y, this.color.getRGB());
+            }
+        }
+        if (x + 1 >= 0 && x + 1 < bufferedImage.getHeight() && y >= 0 && y < bufferedImage.getWidth()) {
+            Color t = new Color(bufferedImage.getRGB(x + 1, y));
+            if (t.equals(color)) {
+                dopX.add(x + 1);
+                dopY.add(y);
+                fillingArea.add(x + 1, y);
+                bufferedImage.setRGB(x + 1, y, this.color.getRGB());
+            }
+        }
+        if (x >= 0 && x < bufferedImage.getHeight() && y - 1 >= 0 && y - 1 < bufferedImage.getWidth()) {
+            Color t = new Color(bufferedImage.getRGB(x, y - 1));
+            if (t.equals(color)) {
+                dopX.add(x);
+                dopY.add(y - 1);
+                fillingArea.add(x, y - 1);
+                bufferedImage.setRGB(x, y - 1, this.color.getRGB());
+            }
+        }
+        if (x >= 0 && x < bufferedImage.getHeight() && y + 1 >= 0 && y + 1 < bufferedImage.getWidth()) {
+            Color t = new Color(bufferedImage.getRGB(x, y));
+            if (t.equals(color)) {
+                dopX.add(x);
+                dopY.add(y + 1);
+                fillingArea.add(x, y + 1);
+                bufferedImage.setRGB(x, y + 1, this.color.getRGB());
+            }
+        }
+        X = new Vector<>(dopX);
+        Y = new Vector<>(dopY);
+        while (X.size() != 0) {
+            dopX = new Vector<>();
+            dopY = new Vector<>();
+            for (int i = 0; i < X.size(); i++) {
+                if (X.get(i) - 1 >= 0 && X.get(i) - 1 < bufferedImage.getHeight() && Y.get(i) >= 0 && Y.get(i) < bufferedImage.getWidth()) {
+                    Color t = new Color(bufferedImage.getRGB(X.get(i) - 1, Y.get(i)));
+                    if (t.equals(color)) {
+                        dopX.add(X.get(i) - 1);
+                        dopY.add(Y.get(i));
+                        fillingArea.add(X.get(i) - 1, Y.get(i));
+                        bufferedImage.setRGB(X.get(i) - 1, Y.get(i), Color.GRAY.getRGB());
+                    }
+                }
+                if (X.get(i) + 1 >= 0 && X.get(i) + 1 < bufferedImage.getHeight() && Y.get(i) >= 0 && Y.get(i) < bufferedImage.getWidth()) {
+                    Color t = new Color(bufferedImage.getRGB(X.get(i) + 1, Y.get(i)));
+                    if (t.equals(color)) {
+                        dopX.add(X.get(i) + 1);
+                        dopY.add(Y.get(i));
+                        fillingArea.add(X.get(i) + 1, Y.get(i));
+                        bufferedImage.setRGB(X.get(i) + 1, Y.get(i), Color.GRAY.getRGB());
+                    }
+                }
+                if (X.get(i) >= 0 && X.get(i) < bufferedImage.getHeight() && Y.get(i) - 1 >= 0 && Y.get(i) - 1 < bufferedImage.getWidth()) {
+                    Color t = new Color(bufferedImage.getRGB(X.get(i), Y.get(i) - 1));
+                    if (t.equals(color)) {
+                        dopX.add(X.get(i));
+                        dopY.add(Y.get(i) - 1);
+                        fillingArea.add(X.get(i), Y.get(i) - 1);
+                        bufferedImage.setRGB(X.get(i), Y.get(i) - 1, Color.GRAY.getRGB());
+                    }
+                }
+                if (X.get(i) >= 0 && X.get(i) < bufferedImage.getHeight() && Y.get(i) + 1 >= 0 && Y.get(i) + 1 < bufferedImage.getWidth()) {
+                    Color t = new Color(bufferedImage.getRGB(X.get(i), Y.get(i) + 1));
+                    if (t.equals(color)) {
+                        dopX.add(X.get(i));
+                        dopY.add(Y.get(i) + 1);
+                        fillingArea.add(X.get(i), Y.get(i) + 1);
+                        bufferedImage.setRGB(X.get(i), Y.get(i) + 1, Color.GRAY.getRGB());
+                    }
+                }
+            }
+            X = new Vector<>(dopX);
+            Y = new Vector<>(dopY);
+        }
     }
 }
