@@ -65,7 +65,7 @@ public class Ball implements Figure {
                 block.getX() + Arcanoid.SIZE_WIDTH >= x + radius && block.getX() <= x + radius) &&
                 (block.getY() < y - radius && block.getY() + Arcanoid.SIZE_WIDTH > y - radius ||
                         block.getY() < y + radius && block.getY() + Arcanoid.SIZE_WIDTH > y + radius)) {
-            move_y *= -1;
+            move_x *= -1;
             return true;
         }
         return false;
